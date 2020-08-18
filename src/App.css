@@ -12,6 +12,18 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+.dashboard-content{
+  background-color: #282c34;
+  color: white;
+}
+
+.header{
+  padding-bottom: 5px;
+  padding-top: 4px;
+  padding-left: 22px;
+  /* border-bottom: 4px solid #1256E7; */
+ box-shadow: 0 6px 10px rgb(0 0 0);
+}
 
 .App-header {
   background-color: #282c34;
@@ -35,4 +47,74 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.mr-lr-0
+{
+  margin-right: 0px !important;
+  margin-left: 0px !important;
+}
+.summary{
+  margin-top: 16px;
+  /* margin: 2px -38px; */
+  /* margin-left: 62px; */
+  margin-left: 25px !important;
+  margin-right: 25px !important;
+}
+.summary-card{
+   /* background-color: blue;
+   border: 1px solid white;
+    border-radius: 10px; */
+    text-align: center;
+    padding: 24px;
+}
+
+.card-heading
+{
+  font-size: 29px;
+  font-weight: 500;
+}
+.card-body
+{
+  font-size: 38px;
+  font-weight: 500;
+}
+
+.card-variance
+{
+  font-size: 24px;
+}
+.card-content
+{
+  border: 1px solid whitesmoke;
+  padding: 16px;
+  border-radius: 47px;
+  box-shadow: 2px 8px 17px #8888;
+}
+
+.barchart
+{
+    width: 95%;
+    height: 570px;
+    border: 1px solid antiquewhite;
+    border-radius: 33px;
+    padding: 19px;
+}
+
+.bar-body{
+  width: 99%;
+  height: 500px;
+  color: black;
+}
+
+.chart-title{
+  font-size: 31px;
+    font-weight: 500;
+    margin-right: 97px;
+}
+
+.switch-button
+{
+    font-size: 25px;
+    font-weight: 400;
 }
