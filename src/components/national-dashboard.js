@@ -7,6 +7,7 @@ import Barchart from './barchart';
 import LineChart from './lineChart';
 import Switch from '@material-ui/core/Switch';
 import EnhancedTable from './custom-table';
+import Paper from '@material-ui/core/Paper';
 
 function NationalDashboard() {
     const [summarydata, setSummarydata] = useState({});
@@ -19,6 +20,8 @@ function NationalDashboard() {
         checkedRecover:  false,
         checkedDeath: false,
     });
+    const [statewisetrend,setstatewisetrend]= useState({});
+    const [isStateDataAvailable,setStateDataAvailable]= useState(false);
 
     const handleChange = (event) => {
         setState({ ...state, [event.target.name]: event.target.checked });
@@ -74,11 +77,25 @@ function NationalDashboard() {
                     deathtrend.cummulative.categories.push((element.date).toString());
 
                 });
+                var stateWiseData=[];
+                data.statewise.forEach((element)=>{
+                    stateWiseData.push({
+                        state:element.state,
+                        confirmed:parseInt(element.confirmed),
+                        recovered:parseInt(element.recovered),
+                        deaths:parseInt(element.deaths),
+                        recoveryRate:parseInt(element.confirmed)==0.00?0:(((parseInt(element.recovered)/parseInt(element.confirmed))*100).toFixed(2)),
+                        deathRate:parseInt(element.confirmed)==0?0.00:(((parseInt(element.deaths)/parseInt(element.confirmed))*100).toFixed(2))
+
+                    })
+                });
 
                // console.log(postivetrend);
                 setPostivetrend(postivetrend);
                 setRecoveredtrend(recoveredtrend);
                 setDeathtrend(deathtrend);
+                setstatewisetrend(stateWiseData);
+                setStateDataAvailable(true);
 
             })
     }, []);
@@ -95,7 +112,7 @@ function NationalDashboard() {
     return (<div>
         <div className="summary row ">
             <div className="col-sm-3 summary-card">
-                <div className="card-content">
+              <div className="card-content">  
                     <div className="card-heading">
                         <span>Postive Cases</span>
                     </div>
@@ -107,6 +124,7 @@ function NationalDashboard() {
                         <FontAwesomeIcon icon="arrow-up" />
                     </div>
                 </div>
+                
             </div>
             <div className="col-sm-3 summary-card">
                 <div className="card-content">
@@ -210,7 +228,7 @@ function NationalDashboard() {
                 <span className="chart-title">State Wise Case</span>
             </div>
             <div className="bar-body">
-                <EnhancedTable></EnhancedTable>
+              {isStateDataAvailable && <EnhancedTable data={statewisetrend}></EnhancedTable>}
             </div>
         </div>         
         
