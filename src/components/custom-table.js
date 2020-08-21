@@ -1,6 +1,6 @@
 import React,{ useEffect} from 'react';
 import PropTypes from 'prop-types';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import {  makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -37,8 +37,8 @@ function stableSort(array, comparator) {
 
 const headCells = [
   { id: 'state', numeric: false, disablePadding: false, label: 'State' },
-  { id: 'confirmed', numeric: true, disablePadding: false, label: 'Positive Cases' },
-  { id: 'recovered', numeric: true, disablePadding: false, label: 'Recovered Cases' },
+  { id: 'confirmed', numeric: true, disablePadding: false, label: 'Confirmed Cases' },
+  { id: 'recovered', numeric: true, disablePadding: false, label: 'Recovered' },
   { id: 'deaths', numeric: true, disablePadding: false, label: 'Deaths' },
   { id: 'recoveryRate', numeric: true, disablePadding: false, label: 'Recovery Rate' },
   { id: 'deathRate', numeric: true, disablePadding: false, label: 'Death Rate' },
@@ -56,8 +56,8 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.id=="state" ?"left":"right"}
-            padding="left"
+            align={headCell.id==="state" ?"left":"right"}
+            padding="none"
             sortDirection={orderBy === headCell.id ? order : false}
             className={[classes.cellheader].join(' ')}
           >
@@ -82,31 +82,10 @@ function EnhancedTableHead(props) {
 
 EnhancedTableHead.propTypes = {
   classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
   orderBy: PropTypes.string.isRequired,
 };
-
-const useToolbarStyles = makeStyles((theme) => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
-  highlight:
-    theme.palette.type === 'light'
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
-  title: {
-    flex: '1 1 100%',
-  },
-}));
 
 
 const useStyles = makeStyles((theme) => ({
@@ -132,17 +111,18 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
   container: {
-    maxHeight: 440,
+    maxHeight: 500,
   },
   whiteText:{
     color:'#f0ffff',
     fontSize: 18,
-    fontWeight: 700
+    
   },
   cellheader:{
     backgroundColor:'#2b72dd',
     fontSize: 18,
-    fontWeight: 700
+    fontWeight: 700,
+    padding:12,
 
   },
   red:{
@@ -163,13 +143,13 @@ export default function EnhancedTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('confirmed');
-  const [selected, setSelected] = React.useState([]);
-  const [dense, setDense] = React.useState(false);
+  //const [selected, setSelected] = React.useState([]);
+  //const [dense, setDense] = React.useState(false);
   const [rowsData,setRowData]=React.useState([]);
   
 
   useEffect(() => {
-   console.log(props);
+  //  console.log(props);
    setRowData(props.data);
   },[props]);
 
@@ -181,8 +161,6 @@ export default function EnhancedTable(props) {
   function numberFormatter(number) {
     return new Intl.NumberFormat('en-IN').format(number)
 }
- 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
 
   return (
     <div className={classes.root}>
@@ -190,13 +168,11 @@ export default function EnhancedTable(props) {
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-            aria-label="enhanced table"
+            size="medium"
             stickyHeader aria-label="sticky table"
           >
             <EnhancedTableHead
               classes={classes}
-              numSelected={selected.length}
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
@@ -204,20 +180,17 @@ export default function EnhancedTable(props) {
             <TableBody>
               {stableSort(rowsData, getComparator(order, orderBy))
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+                
 
                   return (
                     <TableRow
                       hover
-                      aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row.state}
-                      selected={isItemSelected}
                       className={classes.whiteText}
                     >
                      
-                      <TableCell className={classes.whiteText} component="th" id={labelId} scope="row" padding="right">
+                      <TableCell className={classes.whiteText} component="th"  scope="row" >
                         {row.state}
                       </TableCell>
                       <TableCell className={classes.red}  align="right">{numberFormatter(row.confirmed)}</TableCell>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 //import ReactDOM from 'react-dom';
 //import './dashboard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Chart from "react-apexcharts";
+//import Chart from "react-apexcharts";
 import Barchart from './barchart';
 import LineChart from './lineChart';
 import Switch from '@material-ui/core/Switch';
@@ -14,15 +14,16 @@ function NationalDashboard() {
     const [postivetrend, setPostivetrend] = useState({ daily: { data: [], categories: [] }, cummulative: { data: [], categories: [] } });
     const [recoveredtrend, setRecoveredtrend] = useState({ daily: { data: [], categories: [] }, cummulative: { data: [], categories: [] } });
     const [deathtrend, setDeathtrend] = useState({ daily: { data: [], categories: [] }, cummulative: { data: [], categories: [] } });
-    const [isdatavailable, setDataavailable] = useState(false);
+    // const [isdatavailable, setDataavailable] = useState(false);
+    const [stateMetric, setStateMetric] = useState({});
     const [state, setState] = useState({
         checkedPostive: false,
-        checkedRecover:  false,
+        checkedRecover: false,
         checkedDeath: false,
     });
-    const [statewisetrend,setstatewisetrend]= useState({});
-    const [isStateDataAvailable,setStateDataAvailable]= useState(false);
-
+    const [statewisetrend, setstatewisetrend] = useState({});
+    const [isStateDataAvailable, setStateDataAvailable] = useState(false);
+    const UTs = ["DN", "CH", "LA", "AN", "PY", "TT", "UN", "LD"];
     const handleChange = (event) => {
         setState({ ...state, [event.target.name]: event.target.checked });
     };
@@ -42,6 +43,8 @@ function NationalDashboard() {
                 summarydata.totaldeceased = data.cases_time_series[data.cases_time_series.length - 1].totaldeceased;
                 summarydata.totalrecovered = data.cases_time_series[data.cases_time_series.length - 1].totalrecovered;
                 summarydata.totalactive = summarydata.totalconfirmed - summarydata.totalrecovered - summarydata.totaldeceased;
+                summarydata.deathRate = (((parseInt(summarydata.totaldeceased) / parseInt(summarydata.totalconfirmed)) * 100).toFixed(2));
+                summarydata.recoveryRate = (((parseInt(summarydata.totalrecovered) / parseInt(summarydata.totalconfirmed)) * 100).toFixed(2));
                 setSummarydata(summarydata);
 
                 let postivetrend = {
@@ -57,7 +60,16 @@ function NationalDashboard() {
                     cummulative: { data: [], categories: [], color: "#ff0000" }
                 };
 
-
+                let StateMetrics = {
+                    highestConfirmed: { state: "", value: "" },
+                    lowestConfirmed: { state: "", value: "" },
+                    highestDeaths: { state: "", value: "" },
+                    lowestDeaths: { state: "", value: "" },
+                    highestRecoverRate: { state: "", value: "" },
+                    lowestRecoverRate: { state: "", value: "" },
+                    highestDeathRate: { state: "", value: "" },
+                    lowestDeathRate: { state: "", value: "" },
+                };
 
                 data.cases_time_series.forEach(element => {
                     postivetrend.daily.data.push(parseInt(element.dailyconfirmed));
@@ -77,20 +89,71 @@ function NationalDashboard() {
                     deathtrend.cummulative.categories.push((element.date).toString());
 
                 });
-                var stateWiseData=[];
-                data.statewise.forEach((element)=>{
+                var stateWiseData = [];
+                var stateWiseDataOnly = [];
+                data.statewise.forEach((element) => {
                     stateWiseData.push({
-                        state:element.state,
-                        confirmed:parseInt(element.confirmed),
-                        recovered:parseInt(element.recovered),
-                        deaths:parseInt(element.deaths),
-                        recoveryRate:parseInt(element.confirmed)==0.00?0:(((parseInt(element.recovered)/parseInt(element.confirmed))*100).toFixed(2)),
-                        deathRate:parseInt(element.confirmed)==0?0.00:(((parseInt(element.deaths)/parseInt(element.confirmed))*100).toFixed(2))
+                        state: element.state,
+                        confirmed: parseInt(element.confirmed),
+                        recovered: parseInt(element.recovered),
+                        deaths: parseInt(element.deaths),
+                        recoveryRate: parseInt(element.confirmed) === 0.00 ? 0 : (((parseInt(element.recovered) / parseInt(element.confirmed)) * 100).toFixed(2)),
+                        deathRate: parseInt(element.confirmed) === 0 ? 0.00 : (((parseInt(element.deaths) / parseInt(element.confirmed)) * 100).toFixed(2))
 
                     })
+
+                    if (!UTs.includes(element.statecode)) {
+                        stateWiseDataOnly.push({
+                            state: element.state,
+                            confirmed: parseInt(element.confirmed),
+                            recovered: parseInt(element.recovered),
+                            deaths: parseInt(element.deaths),
+                            recoveryRate: parseInt(element.confirmed) === 0.00 ? 0 : (((parseInt(element.recovered) / parseInt(element.confirmed)) * 100).toFixed(2)),
+                            deathRate: parseInt(element.confirmed) === 0 ? 0.00 : (((parseInt(element.deaths) / parseInt(element.confirmed)) * 100).toFixed(2))
+                        })
+                    }
                 });
 
-               // console.log(postivetrend);
+                stateWiseDataOnly.sort((a, b) => {
+                    return b.confirmed - a.confirmed;
+                });
+
+                StateMetrics.highestConfirmed.state = stateWiseDataOnly[0].state;
+                StateMetrics.highestConfirmed.value = stateWiseDataOnly[0].confirmed;
+                StateMetrics.lowestConfirmed.state = stateWiseDataOnly[stateWiseDataOnly.length - 1].state;
+                StateMetrics.lowestConfirmed.value = stateWiseDataOnly[stateWiseDataOnly.length - 1].confirmed;
+
+                stateWiseDataOnly.sort((a, b) => {
+                    return b.deaths - a.deaths;
+                });
+
+                StateMetrics.highestDeaths.state = stateWiseDataOnly[0].state;
+                StateMetrics.highestDeaths.value = stateWiseDataOnly[0].deaths;
+                StateMetrics.lowestDeaths.state = stateWiseDataOnly[stateWiseDataOnly.length - 1].state;
+                StateMetrics.lowestDeaths.value = stateWiseDataOnly[stateWiseDataOnly.length - 1].deaths;
+
+                stateWiseDataOnly.sort((a, b) => {
+                    return b.recoveryRate - a.recoveryRate;
+                });
+
+                StateMetrics.highestRecoverRate.state = stateWiseDataOnly[0].state;
+                StateMetrics.highestRecoverRate.value = stateWiseDataOnly[0].recoveryRate;
+                StateMetrics.lowestRecoverRate.state = stateWiseDataOnly[stateWiseDataOnly.length - 1].state;
+                StateMetrics.lowestRecoverRate.value = stateWiseDataOnly[stateWiseDataOnly.length - 1].recoveryRate;
+
+                stateWiseDataOnly.sort((a, b) => {
+                    return b.deathRate - a.deathRate;
+                });
+
+                StateMetrics.highestDeathRate.state = stateWiseDataOnly[0].state;
+                StateMetrics.highestDeathRate.value = stateWiseDataOnly[0].deathRate;
+                StateMetrics.lowestDeathRate.state = stateWiseDataOnly[stateWiseDataOnly.length - 1].state;
+                StateMetrics.lowestDeathRate.value = stateWiseDataOnly[stateWiseDataOnly.length - 1].deathRate;
+
+                console.log(StateMetrics);
+
+                // console.log(postivetrend);
+                setStateMetric(StateMetrics);
                 setPostivetrend(postivetrend);
                 setRecoveredtrend(recoveredtrend);
                 setDeathtrend(deathtrend);
@@ -104,134 +167,260 @@ function NationalDashboard() {
         return new Intl.NumberFormat('en-IN').format(number)
     }
 
-    function showChart() {
-        setDataavailable(!isdatavailable);
-    }
 
-    // console.log(postivetrend)
     return (<div>
-        <div className="summary row ">
-            <div className="col-sm-3 summary-card">
-              <div className="card-content">  
+        <div className="summary row mr-lf-25">
+            <div className="col-sm-2 summary-card">
+                <Paper className="card-content">
                     <div className="card-heading">
-                        <span>Postive Cases</span>
+                        <span>Confirmed Cases</span>
                     </div>
                     <div className="card-body">
-                        <span>{numberFormatter(summarydata.totalconfirmed)}</span>
+                        <span className="red">{numberFormatter(summarydata.totalconfirmed)}</span>
                     </div>
-                    <div className="card-variance">
-                        <span>{numberFormatter(summarydata.dailyconfirmed)}</span>
+                    <div className={["card-variance", "red"].join(" ")}>
+                        <span >{numberFormatter(summarydata.dailyconfirmed)}</span>
                         <FontAwesomeIcon icon="arrow-up" />
                     </div>
-                </div>
-                
+                </Paper>
+
             </div>
-            <div className="col-sm-3 summary-card">
-                <div className="card-content">
+            <div className="col-sm-2 summary-card">
+                <Paper className="card-content">
                     <div className="card-heading">
                         <span>Active Cases</span>
                     </div>
                     <div className="card-body">
-                        <span>{numberFormatter(summarydata.totalactive)}</span>
+                        <span className="red">{numberFormatter(summarydata.totalactive)}</span>
                     </div>
-                    <div className="card-variance">
+                    {summarydata.dailyactive > 0 && <div className={["card-variance", "red"].join(" ")}>
                         <span>{numberFormatter(summarydata.dailyactive)}</span>
                         <FontAwesomeIcon icon="arrow-up" />
-                    </div>
-                </div>
+                    </div>}
+                    {summarydata.dailyactive <= 0 && <div className={["card-variance", "green"].join(" ")}>
+                        <span>{numberFormatter(summarydata.dailyactive)}</span>
+                        <FontAwesomeIcon icon="arrow-down" />
+                    </div>}
+                </Paper>
             </div>
-            <div className="col-sm-3 summary-card">
-                <div className="card-content">
+            <div className="col-sm-2 summary-card">
+                <Paper className="card-content">
                     <div className="card-heading">
-                        <span>Recovered Cases</span>
+                        <span>Recovered</span>
                     </div>
                     <div className="card-body">
-                        <span>{numberFormatter(summarydata.totalrecovered)}</span>
+                        <span className="green">{numberFormatter(summarydata.totalrecovered)}</span>
                     </div>
-                    <div className="card-variance">
+                    <div className={["card-variance", "green"].join(" ")}>
                         <span>{numberFormatter(summarydata.dailyrecovered)}</span>
                         <FontAwesomeIcon icon="arrow-up" />
                     </div>
-                </div>
+                </Paper>
             </div>
-            <div className="col-sm-3 summary-card">
-                <div className="card-content">
+            <div className="col-sm-2 summary-card">
+                <Paper className="card-content">
                     <div className="card-heading">
-                        <span>Death Cases</span>
+                        <span  >Deaths</span>
                     </div>
                     <div className="card-body">
-                        <span>{numberFormatter(summarydata.totaldeceased)}</span>
+                        <span className="grey">{numberFormatter(summarydata.totaldeceased)}</span>
                     </div>
-                    <div className="card-variance">
+                    <div className={["card-variance", "grey"].join(" ")}>
                         <span>{numberFormatter(summarydata.dailydeceased)}</span>
                         <FontAwesomeIcon icon="arrow-up" />
                     </div>
+                </Paper>
+            </div>
+            <div className="col-sm-2 summary-card">
+                <Paper className="card-content">
+                    <div className="card-heading">
+                        <span>Recovery Rate</span>
+                    </div>
+                    <div className="card-body">
+                        <span className={["green", "percentCard"].join(" ")}>{numberFormatter(summarydata.recoveryRate)}%</span>
+                    </div>
+                    {/* <div className="card-variance">
+                        <span>{numberFormatter(summarydata.recoveryRate)}</span>
+                        <FontAwesomeIcon icon="arrow-up" />
+                    </div> */}
+                </Paper>
+            </div>
+            <div className="col-sm-2 summary-card">
+                <Paper className="card-content">
+                    <div className="card-heading">
+                        <span>Death Rate</span>
+                    </div>
+                    <div className="card-body">
+                        <span className={["grey", "percentCard"].join(" ")}>{numberFormatter(summarydata.deathRate)}%</span>
+                    </div>
+                    {/* <div className="card-variance">
+                        <span>{numberFormatter(summarydata.deathRate)}</span>
+                        <FontAwesomeIcon icon="arrow-up" />
+                    </div> */}
+                </Paper>
+            </div>
+
+        </div>
+        <div className="row mr-lr-0">
+            <div className="col-sm-9">
+                <Paper className="summary barchart">
+                    <div className="bar-heading">
+                        <span className="chart-title">Confirmed Cases Trend</span>
+                        <span className="switch-button">Daily</span> <Switch
+                            checked={state.checkedPostive}
+                            onChange={handleChange}
+                            name="checkedPostive"
+                            color="default"
+                            inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        />
+                        <span className="switch-button">Cumulative</span>
+                    </div>
+                    <div className="bar-body">
+                        {!state.checkedPostive && <Barchart data={postivetrend.daily.data} categories={postivetrend.daily.categories} color={postivetrend.daily.color}></Barchart>}
+                        {state.checkedPostive && <LineChart data={postivetrend.cummulative.data} categories={postivetrend.cummulative.categories} color={postivetrend.cummulative.color}></LineChart>}
+                    </div>
+                </Paper>
+                <Paper className="summary barchart">
+                    <div className="bar-heading">
+                        <span className="chart-title">Recovered Cases Trend</span>
+                        <span className="switch-button">Daily</span> <Switch
+                            checked={state.checkedRecover}
+                            onChange={handleChange}
+                            name="checkedRecover"
+                            color="default"
+                            inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        />
+                        <span className="switch-button">Cumulative</span>
+                    </div>
+                    <div className="bar-body">
+                        {!state.checkedRecover && <Barchart data={recoveredtrend.daily.data} categories={recoveredtrend.daily.categories} color={recoveredtrend.daily.color}></Barchart>}
+                        {state.checkedRecover && <LineChart data={recoveredtrend.cummulative.data} categories={recoveredtrend.cummulative.categories} color={recoveredtrend.cummulative.color}></LineChart>}
+
+                    </div>
+                </Paper>
+                <Paper className="summary barchart">
+                    <div className="bar-heading">
+                        <span className="chart-title">Death Cases Trend</span>
+                        <span className="switch-button">Daily</span> <Switch
+                            checked={state.checkedDeath}
+                            onChange={handleChange}
+                            name="checkedDeath"
+                            color="default"
+                            inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        />
+                        <span className="switch-button">Cumulative</span>
+                    </div>
+                    <div className="bar-body">
+                        {!state.checkedDeath && <Barchart data={deathtrend.daily.data} categories={deathtrend.daily.categories} color={deathtrend.daily.color}></Barchart>}
+                        {state.checkedDeath && <LineChart data={deathtrend.cummulative.data} categories={deathtrend.cummulative.categories} color={deathtrend.cummulative.color}></LineChart>}
+
+                    </div>
+                </Paper>
+                <Paper className="summary barchart">
+                    <div className="bar-heading">
+                        <span className="chart-title">State Wise Case</span>
+                    </div>
+                    <div className="bar-body">
+                        {isStateDataAvailable && <EnhancedTable data={statewisetrend}></EnhancedTable>}
+                    </div>
+                </Paper>
+                <div className="heightSeparator">
                 </div>
             </div>
+            {isStateDataAvailable && <div className="col-sm-3">
+                <Paper className="stateCardContent">
+                    <div className="card-heading">
+                        <span>State with Highest Confirmed Cases</span>
+                    </div>
+                    <div className="stateCardBody">
+                        <span className="red">{stateMetric.highestConfirmed.state}</span>
+                    </div>
+                    <div className={["card-variance", "red"].join(" ")}>
+                        <span >{numberFormatter(stateMetric.highestConfirmed.value)}</span>
+                    </div>
+                </Paper>
+                <Paper className="stateCardContent">
+                    <div className="card-heading">
+                        <span>State with Lowest Confirmed Cases</span>
+                    </div>
+                    <div className="stateCardBody">
+                        <span className="green">{stateMetric.lowestConfirmed.state}</span>
+                    </div>
+                    <div className={["card-variance", "green"].join(" ")}>
+                        <span >{numberFormatter(stateMetric.lowestConfirmed.value)}</span>
+                    </div>
+                </Paper>
+                <Paper className="stateCardContent">
+                    <div className="card-heading">
+                        <span>State with Highest Recovery Rate</span>
+                    </div>
+                    <div className="stateCardBody">
+                        <span className="green">{stateMetric.highestRecoverRate.state}</span>
+                    </div>
+                    <div className={["card-variance", "green"].join(" ")}>
+                        <span >{numberFormatter(stateMetric.highestRecoverRate.value)}%</span>
+                    </div>
+                </Paper>
+                <Paper className="stateCardContent">
+                    <div className="card-heading">
+                        <span>State with  Lowest Recovery Rate</span>
+                    </div>
+                    <div className="stateCardBody">
+                        <span className="red">{stateMetric.lowestRecoverRate.state}</span>
+                    </div>
+                    <div className={["card-variance", "red"].join(" ")}>
+                        <span >{numberFormatter(stateMetric.lowestRecoverRate.value)}%</span>
+                    </div>
+                </Paper>
+                <Paper className="stateCardContent">
+                    <div className="card-heading">
+                        <span>State with Highest Deaths</span>
+                    </div>
+                    <div className="stateCardBody">
+                        <span className="red">{stateMetric.highestDeaths.state}</span>
+                    </div>
+                    <div className={["card-variance", "red"].join(" ")}>
+                        <span >{numberFormatter(stateMetric.highestDeaths.value)}</span>
+                    </div>
+                </Paper>
+                <Paper className="stateCardContent">
+                    <div className="card-heading">
+                        <span>State with Lowest Deaths</span>
+                    </div>
+                    <div className="stateCardBody">
+                        <span className="green">{stateMetric.lowestDeaths.state}</span>
+                    </div>
+                    <div className={["card-variance", "green"].join(" ")}>
+                        <span >{numberFormatter(stateMetric.lowestDeaths.value)}</span>
+                    </div>
+                </Paper>
+                <Paper className="stateCardContent">
+                    <div className="card-heading">
+                        <span>State with Highest Death Rate</span>
+                    </div>
+                    <div className="stateCardBody">
+                        <span className="red">{stateMetric.highestDeathRate.state}</span>
+                    </div>
+                    <div className={["card-variance", "red"].join(" ")}>
+                        <span >{numberFormatter(stateMetric.highestDeathRate.value)}%</span>
+                    </div>
+                </Paper>
+                <Paper className="stateCardContent">
+                    <div className="card-heading">
+                        <span>State with Lowest Death Rate</span>
+                    </div>
+                    <div className="stateCardBody">
+                        <span className="green">{stateMetric.lowestDeathRate.state}</span>
+                    </div>
+                    <div className={["card-variance", "green"].join(" ")}>
+                        <span >{numberFormatter(stateMetric.lowestDeathRate.value)}%</span>
+                    </div>
+                </Paper>
 
-        </div>
-        <div className="summary barchart">
-            <div className="bar-heading">
-                <span className="chart-title">Postive Cases Trend</span>
-                <span className="switch-button">Daily</span> <Switch
-                    checked={state.checkedPostive}
-                    onChange={handleChange}
-                    name="checkedPostive"
-                    color="default"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                />
-                <span className="switch-button">Cumulative</span>
-            </div>
-            <div className="bar-body">
-                {!state.checkedPostive && <Barchart data={postivetrend.daily.data} categories={postivetrend.daily.categories} color={postivetrend.daily.color}></Barchart>}
-                {state.checkedPostive && <LineChart data={postivetrend.cummulative.data} categories={postivetrend.cummulative.categories} color={postivetrend.cummulative.color}></LineChart>}
-            </div>
-        </div>
-        <div className="summary barchart">
-            <div className="bar-heading">
-                <span className="chart-title">Recovered Cases Trend</span>
-                <span className="switch-button">Daily</span> <Switch
-                    checked={state.checkedRecover}
-                    onChange={handleChange}
-                    name="checkedRecover"
-                    color="default"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                />
-                <span className="switch-button">Cumulative</span>
-            </div>
-            <div className="bar-body">
-                {!state.checkedRecover && <Barchart data={recoveredtrend.daily.data} categories={recoveredtrend.daily.categories} color={recoveredtrend.daily.color}></Barchart>}
-                {state.checkedRecover && <LineChart data={recoveredtrend.cummulative.data} categories={recoveredtrend.cummulative.categories} color={recoveredtrend.cummulative.color}></LineChart>}
 
             </div>
+            }
         </div>
-        <div className="summary barchart">
-            <div className="bar-heading">
-                <span className="chart-title">Death Cases Trend</span>
-                <span className="switch-button">Daily</span> <Switch
-                    checked={state.checkedDeath}
-                    onChange={handleChange}
-                    name="checkedDeath"
-                    color="default"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                />
-                <span className="switch-button">Cumulative</span>
-            </div>
-            <div className="bar-body">
-                {!state.checkedDeath && <Barchart data={deathtrend.daily.data} categories={deathtrend.daily.categories} color={deathtrend.daily.color}></Barchart>}
-                {state.checkedDeath && <LineChart data={deathtrend.cummulative.data} categories={deathtrend.cummulative.categories} color={deathtrend.cummulative.color}></LineChart>}
-
-            </div>
-        </div>
-        <div className="summary barchart">
-            <div className="bar-heading">
-                <span className="chart-title">State Wise Case</span>
-            </div>
-            <div className="bar-body">
-              {isStateDataAvailable && <EnhancedTable data={statewisetrend}></EnhancedTable>}
-            </div>
-        </div>         
-        
     </div>);
 
 }
