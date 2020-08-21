@@ -115,25 +115,25 @@ const useStyles = makeStyles((theme) => ({
   },
   whiteText:{
     color:'#f0ffff',
-    fontSize: 18,
+    fontSize: 12,
     
   },
   cellheader:{
     backgroundColor:'#2b72dd',
-    fontSize: 18,
-    fontWeight: 700,
-    padding:12,
+    fontSize: 12,
+    fontWeight: 600,
+    padding:6,
 
   },
   red:{
     color:"#ff0000",
-    fontSize: 18,
-    fontWeight: 700
+    fontSize: 12,
+    fontWeight: 600
   },
   green:{
     color:"#33cc33",
-    fontSize: 18,
-    fontWeight: 700
+    fontSize: 12,
+    fontWeight: 600
   }
 
 

@@ -264,16 +264,21 @@ function NationalDashboard() {
         <div className="row mr-lr-0">
             <div className="col-sm-9">
                 <Paper className="summary barchart">
-                    <div className="bar-heading">
-                        <span className="chart-title">Confirmed Cases Trend</span>
-                        <span className="switch-button">Daily</span> <Switch
-                            checked={state.checkedPostive}
-                            onChange={handleChange}
-                            name="checkedPostive"
-                            color="default"
-                            inputProps={{ 'aria-label': 'secondary checkbox' }}
-                        />
-                        <span className="switch-button">Cumulative</span>
+                    <div className="row bar-heading">
+                        <div className="col-sm-4">
+                            <span className="chart-title">Confirmed Cases Trend</span>
+                        </div>
+                        <div className="col-sm-4">
+                            <span className="switch-button">Daily</span>
+                            <Switch
+                                checked={state.checkedPostive}
+                                onChange={handleChange}
+                                name="checkedPostive"
+                                color="default"
+                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                            />
+                            <span className="switch-button">Cumulative</span>
+                        </div>
                     </div>
                     <div className="bar-body">
                         {!state.checkedPostive && <Barchart data={postivetrend.daily.data} categories={postivetrend.daily.categories} color={postivetrend.daily.color}></Barchart>}
@@ -281,16 +286,21 @@ function NationalDashboard() {
                     </div>
                 </Paper>
                 <Paper className="summary barchart">
-                    <div className="bar-heading">
-                        <span className="chart-title">Recovered Cases Trend</span>
-                        <span className="switch-button">Daily</span> <Switch
-                            checked={state.checkedRecover}
-                            onChange={handleChange}
-                            name="checkedRecover"
-                            color="default"
-                            inputProps={{ 'aria-label': 'secondary checkbox' }}
-                        />
-                        <span className="switch-button">Cumulative</span>
+                <div className="row bar-heading">
+                        <div className="col-sm-4">
+                            <span className="chart-title">Recovered Cases Trend</span>
+                        </div>
+                        <div className="col-sm-4">
+                            <span className="switch-button">Daily</span>
+                            <Switch
+                                checked={state.checkedRecover}
+                                onChange={handleChange}
+                                name="checkedRecover"
+                                color="default"
+                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                            />
+                            <span className="switch-button">Cumulative</span>
+                        </div>
                     </div>
                     <div className="bar-body">
                         {!state.checkedRecover && <Barchart data={recoveredtrend.daily.data} categories={recoveredtrend.daily.categories} color={recoveredtrend.daily.color}></Barchart>}
@@ -299,16 +309,21 @@ function NationalDashboard() {
                     </div>
                 </Paper>
                 <Paper className="summary barchart">
-                    <div className="bar-heading">
-                        <span className="chart-title">Death Cases Trend</span>
-                        <span className="switch-button">Daily</span> <Switch
-                            checked={state.checkedDeath}
-                            onChange={handleChange}
-                            name="checkedDeath"
-                            color="default"
-                            inputProps={{ 'aria-label': 'secondary checkbox' }}
-                        />
-                        <span className="switch-button">Cumulative</span>
+                <div className="row bar-heading">
+                        <div className="col-sm-4">
+                            <span className="chart-title">Death Cases Trend</span>
+                        </div>
+                        <div className="col-sm-4">
+                            <span className="switch-button">Daily</span>
+                            <Switch
+                                checked={state.checkedDeath}
+                                onChange={handleChange}
+                                name="checkedDeath"
+                                color="default"
+                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                            />
+                            <span className="switch-button">Cumulative</span>
+                        </div>
                     </div>
                     <div className="bar-body">
                         {!state.checkedDeath && <Barchart data={deathtrend.daily.data} categories={deathtrend.daily.categories} color={deathtrend.daily.color}></Barchart>}
@@ -329,7 +344,7 @@ function NationalDashboard() {
             </div>
             {isStateDataAvailable && <div className="col-sm-3">
                 <Paper className="stateCardContent">
-                    <div className="card-heading">
+                    <div className="stateCardHeading">
                         <span>State with Highest Confirmed Cases</span>
                     </div>
                     <div className="stateCardBody">
@@ -340,7 +355,7 @@ function NationalDashboard() {
                     </div>
                 </Paper>
                 <Paper className="stateCardContent">
-                    <div className="card-heading">
+                    <div className="stateCardHeading">
                         <span>State with Lowest Confirmed Cases</span>
                     </div>
                     <div className="stateCardBody">
@@ -351,7 +366,7 @@ function NationalDashboard() {
                     </div>
                 </Paper>
                 <Paper className="stateCardContent">
-                    <div className="card-heading">
+                    <div className="stateCardHeading">
                         <span>State with Highest Recovery Rate</span>
                     </div>
                     <div className="stateCardBody">
@@ -362,7 +377,7 @@ function NationalDashboard() {
                     </div>
                 </Paper>
                 <Paper className="stateCardContent">
-                    <div className="card-heading">
+                    <div className="stateCardHeading">
                         <span>State with  Lowest Recovery Rate</span>
                     </div>
                     <div className="stateCardBody">
@@ -373,7 +388,7 @@ function NationalDashboard() {
                     </div>
                 </Paper>
                 <Paper className="stateCardContent">
-                    <div className="card-heading">
+                    <div className="stateCardHeading">
                         <span>State with Highest Deaths</span>
                     </div>
                     <div className="stateCardBody">
@@ -384,7 +399,7 @@ function NationalDashboard() {
                     </div>
                 </Paper>
                 <Paper className="stateCardContent">
-                    <div className="card-heading">
+                    <div className="stateCardHeading">
                         <span>State with Lowest Deaths</span>
                     </div>
                     <div className="stateCardBody">
@@ -395,7 +410,7 @@ function NationalDashboard() {
                     </div>
                 </Paper>
                 <Paper className="stateCardContent">
-                    <div className="card-heading">
+                    <div className="stateCardHeading">
                         <span>State with Highest Death Rate</span>
                     </div>
                     <div className="stateCardBody">
@@ -406,7 +421,7 @@ function NationalDashboard() {
                     </div>
                 </Paper>
                 <Paper className="stateCardContent">
-                    <div className="card-heading">
+                    <div className="stateCardHeading">
                         <span>State with Lowest Death Rate</span>
                     </div>
                     <div className="stateCardBody">
