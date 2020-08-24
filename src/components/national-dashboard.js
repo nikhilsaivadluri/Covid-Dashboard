@@ -14,7 +14,7 @@ function NationalDashboard() {
     const [postivetrend, setPostivetrend] = useState({ daily: { data: [], categories: [] }, cummulative: { data: [], categories: [] } });
     const [recoveredtrend, setRecoveredtrend] = useState({ daily: { data: [], categories: [] }, cummulative: { data: [], categories: [] } });
     const [deathtrend, setDeathtrend] = useState({ daily: { data: [], categories: [] }, cummulative: { data: [], categories: [] } });
-    // const [isdatavailable, setDataavailable] = useState(false);
+     const [isdatavailable, setDataavailable] = useState(false);
     const [stateMetric, setStateMetric] = useState({});
     const [state, setState] = useState({
         checkedPostive: false,
@@ -159,6 +159,7 @@ function NationalDashboard() {
                 setDeathtrend(deathtrend);
                 setstatewisetrend(stateWiseData);
                 setStateDataAvailable(true);
+                setDataavailable(true);
 
             })
     }, []);
@@ -281,8 +282,8 @@ function NationalDashboard() {
                         </div>
                     </div>
                     <div className="bar-body">
-                        {!state.checkedPostive && <Barchart data={postivetrend.daily.data} categories={postivetrend.daily.categories} color={postivetrend.daily.color}></Barchart>}
-                        {state.checkedPostive && <LineChart data={postivetrend.cummulative.data} categories={postivetrend.cummulative.categories} color={postivetrend.cummulative.color}></LineChart>}
+                        {isdatavailable && !state.checkedPostive && <Barchart data={postivetrend.daily.data} categories={postivetrend.daily.categories} color={postivetrend.daily.color}></Barchart>}
+                        {isdatavailable && state.checkedPostive && <LineChart data={postivetrend.cummulative.data} categories={postivetrend.cummulative.categories} color={postivetrend.cummulative.color}></LineChart>}
                     </div>
                 </Paper>
                 <Paper className="summary barchart">
@@ -303,8 +304,8 @@ function NationalDashboard() {
                         </div>
                     </div>
                     <div className="bar-body">
-                        {!state.checkedRecover && <Barchart data={recoveredtrend.daily.data} categories={recoveredtrend.daily.categories} color={recoveredtrend.daily.color}></Barchart>}
-                        {state.checkedRecover && <LineChart data={recoveredtrend.cummulative.data} categories={recoveredtrend.cummulative.categories} color={recoveredtrend.cummulative.color}></LineChart>}
+                        {isdatavailable && !state.checkedRecover && <Barchart data={recoveredtrend.daily.data} categories={recoveredtrend.daily.categories} color={recoveredtrend.daily.color}></Barchart>}
+                        {isdatavailable && state.checkedRecover && <LineChart data={recoveredtrend.cummulative.data} categories={recoveredtrend.cummulative.categories} color={recoveredtrend.cummulative.color}></LineChart>}
 
                     </div>
                 </Paper>
@@ -326,8 +327,8 @@ function NationalDashboard() {
                         </div>
                     </div>
                     <div className="bar-body">
-                        {!state.checkedDeath && <Barchart data={deathtrend.daily.data} categories={deathtrend.daily.categories} color={deathtrend.daily.color}></Barchart>}
-                        {state.checkedDeath && <LineChart data={deathtrend.cummulative.data} categories={deathtrend.cummulative.categories} color={deathtrend.cummulative.color}></LineChart>}
+                        {isdatavailable && !state.checkedDeath && <Barchart data={deathtrend.daily.data} categories={deathtrend.daily.categories} color={deathtrend.daily.color}></Barchart>}
+                        {isdatavailable && state.checkedDeath && <LineChart data={deathtrend.cummulative.data} categories={deathtrend.cummulative.categories} color={deathtrend.cummulative.color}></LineChart>}
 
                     </div>
                 </Paper>

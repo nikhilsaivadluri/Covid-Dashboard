@@ -119,7 +119,7 @@ const useStyles = makeStyles((theme) => ({
     
   },
   cellheader:{
-    backgroundColor:'#2b72dd',
+    backgroundColor:'#677ea1',
     fontSize: 12,
     fontWeight: 600,
     padding:6,
