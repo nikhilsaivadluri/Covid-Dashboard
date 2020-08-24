@@ -49,7 +49,9 @@
     transform: rotate(360deg);
   }
 }
-
+.title{
+  font-size: 2rem;
+}
 .mr-lr-0
 {
   margin-right: 0px !important;
@@ -128,7 +130,7 @@
 .barchart
 {
     width: 100%;
-    height: 570px;
+    height: 467px;
     /* border: 1px solid antiquewhite;
     border-radius: 33px; */
     padding: 19px;
@@ -138,7 +140,7 @@
 
 .bar-body{
   width: 99%;
-  height: 500px;
+  /* height: 500px; */
   color: black;
 }
 
@@ -171,9 +173,14 @@
   color: gray !important;
 }
 
+.percentCardbody
+{
+  margin: 9px auto;
+}
+
 .percentCard
 {
-   font-size: 55px;
+   font-size: 43px;
 }
 
 .heightSeparator{

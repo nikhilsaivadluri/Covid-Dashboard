@@ -48,7 +48,7 @@ function Barchar(props) {
                 series={chartdata.series}
                 type="bar"
                 width="100%"
-                height="500px"
+                height="400px"
             />
         </div>
     )

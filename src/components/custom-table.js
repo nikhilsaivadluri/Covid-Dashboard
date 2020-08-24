@@ -111,7 +111,7 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
   container: {
-    maxHeight: 500,
+    maxHeight: 401,
   },
   whiteText:{
     color:'#f0ffff',

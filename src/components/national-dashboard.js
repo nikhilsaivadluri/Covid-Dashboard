@@ -236,7 +236,7 @@ function NationalDashboard() {
                     <div className="card-heading">
                         <span>Recovery Rate</span>
                     </div>
-                    <div className="card-body">
+                    <div className="card-body percentCardbody">
                         <span className={["green", "percentCard"].join(" ")}>{numberFormatter(summarydata.recoveryRate)}%</span>
                     </div>
                     {/* <div className="card-variance">
@@ -250,7 +250,7 @@ function NationalDashboard() {
                     <div className="card-heading">
                         <span>Death Rate</span>
                     </div>
-                    <div className="card-body">
+                    <div className="card-body percentCardbody">
                         <span className={["grey", "percentCard"].join(" ")}>{numberFormatter(summarydata.deathRate)}%</span>
                     </div>
                     {/* <div className="card-variance">
