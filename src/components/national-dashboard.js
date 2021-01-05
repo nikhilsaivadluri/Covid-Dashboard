@@ -240,10 +240,6 @@ function NationalDashboard() {
                     <div className="card-body percentCardbody">
                         <span className={["green", "percentCard"].join(" ")}>{numberFormatter(summarydata.recoveryRate)}%</span>
                     </div>
-                    {/* <div className="card-variance">
-                        <span>{numberFormatter(summarydata.recoveryRate)}</span>
-                        <FontAwesomeIcon icon="arrow-up" />
-                    </div> */}
                 </Paper>
             </div>
             <div className="col-sm-2 summary-card">
@@ -254,10 +250,6 @@ function NationalDashboard() {
                     <div className="card-body percentCardbody">
                         <span className={["grey", "percentCard"].join(" ")}>{numberFormatter(summarydata.deathRate)}%</span>
                     </div>
-                    {/* <div className="card-variance">
-                        <span>{numberFormatter(summarydata.deathRate)}</span>
-                        <FontAwesomeIcon icon="arrow-up" />
-                    </div> */}
                 </Paper>
             </div>
 

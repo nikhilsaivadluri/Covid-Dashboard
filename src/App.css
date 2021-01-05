@@ -23,7 +23,8 @@
   padding-top: 4px;
   padding-left: 22px;
   /* border-bottom: 4px solid #1256E7; */
- box-shadow: 0 6px 10px rgb(0 0 0);
+ /* box-shadow: 0 6px 10px rgb(0 0 0); */
+ background-color: #151AA2;;
 }
 
 .App-header {
