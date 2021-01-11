@@ -8,14 +8,20 @@ import LineChart from './lineChart';
 import Switch from '@material-ui/core/Switch';
 import EnhancedTable from './custom-table';
 import Paper from '@material-ui/core/Paper';
+import ChartCard from './chartCards/chartCard'
+import StateMetricChart from './stateMetricChart/stateMetricChart';
+import RadialBar from './radialBar/radialBar';
+import { scryRenderedDOMComponentsWithClass } from "react-dom/test-utils";
 
 function NationalDashboard() {
     const [summarydata, setSummarydata] = useState({});
     const [postivetrend, setPostivetrend] = useState({ daily: { data: [], categories: [] }, cummulative: { data: [], categories: [] } });
     const [recoveredtrend, setRecoveredtrend] = useState({ daily: { data: [], categories: [] }, cummulative: { data: [], categories: [] } });
     const [deathtrend, setDeathtrend] = useState({ daily: { data: [], categories: [] }, cummulative: { data: [], categories: [] } });
-     const [isdatavailable, setDataavailable] = useState(false);
+    const [activetrend, setActivetrend] = useState({ daily: { data: [], categories: [] }, cummulative: { data: [], categories: [] } });
+    const [isdatavailable, setDataavailable] = useState(false);
     const [stateMetric, setStateMetric] = useState({});
+    const [stateWiseCount, setstateWiseCount] = useState({});
     const [state, setState] = useState({
         checkedPostive: false,
         checkedRecover: false,
@@ -43,8 +49,8 @@ function NationalDashboard() {
                 summarydata.totaldeceased = data.cases_time_series[data.cases_time_series.length - 1].totaldeceased;
                 summarydata.totalrecovered = data.cases_time_series[data.cases_time_series.length - 1].totalrecovered;
                 summarydata.totalactive = summarydata.totalconfirmed - summarydata.totalrecovered - summarydata.totaldeceased;
-                summarydata.deathRate = (((parseInt(summarydata.totaldeceased) / parseInt(summarydata.totalconfirmed)) * 100).toFixed(2));
-                summarydata.recoveryRate = (((parseInt(summarydata.totalrecovered) / parseInt(summarydata.totalconfirmed)) * 100).toFixed(2));
+                summarydata.deathRate = parseFloat(((parseInt(summarydata.totaldeceased) / parseInt(summarydata.totalconfirmed)) * 100).toFixed(2));
+                summarydata.recoveryRate = parseFloat(((parseInt(summarydata.totalrecovered) / parseInt(summarydata.totalconfirmed)) * 100).toFixed(2));
                 setSummarydata(summarydata);
 
                 let postivetrend = {
@@ -56,8 +62,12 @@ function NationalDashboard() {
                     cummulative: { data: [], categories: [], color: "#33cc33" }
                 };
                 let deathtrend = {
-                    daily: { data: [], categories: [], color: "#ff0000" },
-                    cummulative: { data: [], categories: [], color: "#ff0000" }
+                    daily: { data: [], categories: [], color: "#888888" },
+                    cummulative: { data: [], categories: [], color: "#888888" }
+                };
+                let activetrend = {
+                    daily: { data: [], categories: [], color: "#3366ff" },
+                    cummulative: { data: [], categories: [], color: "#3366ff" }
                 };
 
                 let StateMetrics = {
@@ -88,6 +98,12 @@ function NationalDashboard() {
                     deathtrend.cummulative.data.push(parseInt(element.totaldeceased));
                     deathtrend.cummulative.categories.push((element.date).toString());
 
+                    activetrend.daily.data.push(parseInt(element.dailyconfirmed - element.dailyrecovered - element.dailydeceased));
+                    activetrend.daily.categories.push((element.date).toString());
+                    activetrend.cummulative.data.push(parseInt(element.totalconfirmed - element.totalrecovered - element.totaldeceased));
+                    activetrend.cummulative.categories.push((element.date).toString());
+
+
                 });
                 var stateWiseData = [];
                 var stateWiseDataOnly = [];
@@ -117,6 +133,17 @@ function NationalDashboard() {
                 stateWiseDataOnly.sort((a, b) => {
                     return b.confirmed - a.confirmed;
                 });
+
+                // let countbystate={
+                //     state:[],
+                //     count:[],
+                //     total:stateWiseDataOnly
+                // };
+                // stateWiseDataOnly.forEach(element => {
+                //     countbystate.state.push(element.state);
+                //     countbystate.count.push(element.confirmed);
+                // });
+                setstateWiseCount(stateWiseDataOnly);
 
                 StateMetrics.highestConfirmed.state = stateWiseDataOnly[0].state;
                 StateMetrics.highestConfirmed.value = stateWiseDataOnly[0].confirmed;
@@ -158,9 +185,9 @@ function NationalDashboard() {
                 setRecoveredtrend(recoveredtrend);
                 setDeathtrend(deathtrend);
                 setstatewisetrend(stateWiseData);
+                setActivetrend(activetrend);
                 setStateDataAvailable(true);
                 setDataavailable(true);
-
             })
     }, []);
 
@@ -171,88 +198,68 @@ function NationalDashboard() {
 
     return (<div>
         <div className="summary row mr-lf-25">
-            <div className="col-sm-2 summary-card">
-                <Paper className="card-content">
-                    <div className="card-heading">
-                        <span>Confirmed Cases</span>
-                    </div>
-                    <div className="card-body">
-                        <span className="red">{numberFormatter(summarydata.totalconfirmed)}</span>
-                    </div>
-                    <div className={["card-variance", "red"].join(" ")}>
-                        <span >{numberFormatter(summarydata.dailyconfirmed)}</span>
-                        <FontAwesomeIcon icon="arrow-up" />
-                    </div>
-                </Paper>
+            <div className="col-sm-3 summary-card">
+                {isdatavailable && <ChartCard totalValue={numberFormatter(summarydata.totalconfirmed)}
+                    dailyValue={numberFormatter(summarydata.dailyconfirmed)}
+                    title="Confirmed Cases"
+                    data={postivetrend.daily.data}
+                    labels={postivetrend.daily.categories}
+                    color="red"
+                    chartColor={postivetrend.daily.color}>
+                </ChartCard>}
+            </div>
+            <div className="col-sm-3 summary-card">
+                {isdatavailable && <ChartCard totalValue={numberFormatter(summarydata.totalrecovered)}
+                    dailyValue={numberFormatter(summarydata.dailyrecovered)}
+                    title="Recovered"
+                    data={recoveredtrend.daily.data}
+                    labels={recoveredtrend.daily.categories}
+                    color="green"
+                    chartColor={recoveredtrend.daily.color}>
 
-            </div>
-            <div className="col-sm-2 summary-card">
-                <Paper className="card-content">
-                    <div className="card-heading">
-                        <span>Active Cases</span>
-                    </div>
-                    <div className="card-body">
-                        <span className="red">{numberFormatter(summarydata.totalactive)}</span>
-                    </div>
-                    {summarydata.dailyactive > 0 && <div className={["card-variance", "red"].join(" ")}>
-                        <span>{numberFormatter(summarydata.dailyactive)}</span>
-                        <FontAwesomeIcon icon="arrow-up" />
-                    </div>}
-                    {summarydata.dailyactive <= 0 && <div className={["card-variance", "green"].join(" ")}>
-                        <span>{numberFormatter(summarydata.dailyactive)}</span>
-                        <FontAwesomeIcon icon="arrow-down" />
-                    </div>}
-                </Paper>
-            </div>
-            <div className="col-sm-2 summary-card">
-                <Paper className="card-content">
-                    <div className="card-heading">
-                        <span>Recovered</span>
-                    </div>
-                    <div className="card-body">
-                        <span className="green">{numberFormatter(summarydata.totalrecovered)}</span>
-                    </div>
-                    <div className={["card-variance", "green"].join(" ")}>
-                        <span>{numberFormatter(summarydata.dailyrecovered)}</span>
-                        <FontAwesomeIcon icon="arrow-up" />
-                    </div>
-                </Paper>
-            </div>
-            <div className="col-sm-2 summary-card">
-                <Paper className="card-content">
-                    <div className="card-heading">
-                        <span  >Deaths</span>
-                    </div>
-                    <div className="card-body">
-                        <span className="grey">{numberFormatter(summarydata.totaldeceased)}</span>
-                    </div>
-                    <div className={["card-variance", "grey"].join(" ")}>
-                        <span>{numberFormatter(summarydata.dailydeceased)}</span>
-                        <FontAwesomeIcon icon="arrow-up" />
-                    </div>
-                </Paper>
-            </div>
-            <div className="col-sm-2 summary-card">
-                <Paper className="card-content">
-                    <div className="card-heading">
-                        <span>Recovery Rate</span>
-                    </div>
-                    <div className="card-body percentCardbody">
-                        <span className={["green", "percentCard"].join(" ")}>{numberFormatter(summarydata.recoveryRate)}%</span>
-                    </div>
-                </Paper>
-            </div>
-            <div className="col-sm-2 summary-card">
-                <Paper className="card-content">
-                    <div className="card-heading">
-                        <span>Death Rate</span>
-                    </div>
-                    <div className="card-body percentCardbody">
-                        <span className={["grey", "percentCard"].join(" ")}>{numberFormatter(summarydata.deathRate)}%</span>
-                    </div>
-                </Paper>
+                </ChartCard>}
             </div>
 
+            <div className="col-sm-3 summary-card">
+                {isdatavailable && <ChartCard totalValue={numberFormatter(summarydata.totaldeceased)}
+                    dailyValue={numberFormatter(summarydata.dailydeceased)}
+                    title="Deaths"
+                    data={deathtrend.daily.data}
+                    labels={deathtrend.daily.categories}
+                    color="grey"
+                    chartColor={deathtrend.daily.color}>
+
+                </ChartCard>}
+            </div>
+
+            <div className="col-sm-3 summary-card">
+                {isdatavailable && <ChartCard totalValue={numberFormatter(summarydata.totalactive)}
+                    dailyValue={numberFormatter(summarydata.dailyactive)}
+                    title="Active Cases"
+                    data={activetrend.cummulative.data}
+                    labels={activetrend.cummulative.categories}
+                    color="grey"
+                    chartColor={activetrend.daily.color}>
+
+                </ChartCard>}
+            </div>
+        </div>
+
+        <div className="row mr-lr-0" style={{ marginBottom: 18 }}>
+            <div className="col-sm-9">
+                {isdatavailable && <StateMetricChart data={stateWiseCount}></StateMetricChart>}
+
+            </div>
+            <div className="col-sm-3">
+                <Paper className="radialCard">
+                    <div className="row col-sm-12 mr-lr-0 center">
+                        {isdatavailable && <RadialBar color={recoveredtrend.daily.color} name="Recovery Rate" value={summarydata.recoveryRate}></RadialBar>}
+                    </div>
+                    <div className="row col-sm-12 mr-lr-0 center">
+                        {isdatavailable && <RadialBar color={deathtrend.daily.color} name="Death Rate" value={summarydata.deathRate}></RadialBar>}
+                    </div>
+                </Paper>
+            </div>
         </div>
         <div className="row mr-lr-0">
             <div className="col-sm-9">
@@ -279,7 +286,7 @@ function NationalDashboard() {
                     </div>
                 </Paper>
                 <Paper className="summary barchart">
-                <div className="row bar-heading">
+                    <div className="row bar-heading">
                         <div className="col-sm-4">
                             <span className="chart-title">Recovered Cases Trend</span>
                         </div>
@@ -302,7 +309,7 @@ function NationalDashboard() {
                     </div>
                 </Paper>
                 <Paper className="summary barchart">
-                <div className="row bar-heading">
+                    <div className="row bar-heading">
                         <div className="col-sm-4">
                             <span className="chart-title">Death Cases Trend</span>
                         </div>
@@ -326,7 +333,7 @@ function NationalDashboard() {
                 </Paper>
                 <Paper className="summary barchart">
                     <div className="bar-heading">
-                        <span className="chart-title">State Wise Case</span>
+                        <span className="chart-title">State wise Cases</span>
                     </div>
                     <div className="bar-body">
                         {isStateDataAvailable && <EnhancedTable data={statewisetrend}></EnhancedTable>}
@@ -432,5 +439,7 @@ function NationalDashboard() {
     </div>);
 
 }
+
+
 
 export default NationalDashboard;

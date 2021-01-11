@@ -75,36 +75,24 @@
     text-align: center;
     padding: 15px;
 }
+/*  */
 
-.card-heading
+.radialCard
 {
-  font-size: 16px;
-  /* font-weight: 500; */
-}
-.card-body
-{
-  font-size: 31px;
-  font-weight: 500;
-  padding-top: 1.25rem !important ;
-  padding-bottom: 1.25rem !important ;
-  padding-left: 0rem !important ;
-  padding-right:0rem !important ;
-}
-
-.card-variance
-{
-  font-size: 24px;
-}
-.card-content
-{
-  /* border: 1px solid whitesmoke; */
-  padding: 16px;
-  /* border-radius: 47px;
-  box-shadow: 2px 8px 17px #8888; */
+  margin-left: 0px;
+  margin-right: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color:#1c244a !important ;
   color: white !important;
 }
-
+.center
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 .stateCardContent
 {
   background-color:#1c244a !important ;

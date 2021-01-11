@@ -1,0 +1,16 @@
+.card-content
+{
+  padding: 16px;
+  background-color:#1c244a !important ;
+  color: white !important;
+}
+
+.chart
+{
+    color: black;
+    padding-top: 15px;
+}
+
+.red .apexcharts-tooltip{
+  background-color: red;
+}

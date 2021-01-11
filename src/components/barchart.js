@@ -6,7 +6,7 @@ function Barchar(props) {
     const [chartdata, setChartdata] = useState({options:{},series:[]});
 
     useEffect(() => {
-        console.log(props);
+      //  console.log(props);
 
         var options = {
             colors: [props.color],

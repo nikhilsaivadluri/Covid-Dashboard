@@ -1,0 +1,69 @@
+.summary-card1{
+     text-align: center;
+     padding: 15px;
+ }
+ 
+ /* .card-heading1
+ {
+    font-size: 25px;
+    font-weight: 500;
+    text-align: left;
+ } */
+
+ .chartTitle
+ {
+    font-size: 15px;
+    color: red;
+ }
+
+ .value
+ {
+    font-size: 25px;
+   
+ }
+
+ 
+
+ .card-body
+ {
+   font-size: 31px;
+   font-weight: 500;
+   /* padding-top: 1.25rem !important ;
+   padding-bottom: 1.25rem !important ; */
+   padding-left: 0rem !important ;
+   padding-right:0rem !important ;
+   color: black;
+ }
+
+
+
+ .card-variance
+{
+  font-size: 24px;
+}
+.card-content
+{
+  padding: 16px;
+  background-color:#1c244a !important ;
+  color: white !important;
+}
+
+
+.paper{
+    width: '100%',
+    
+  }
+  
+  .red{
+    color: #ff0000 !important;
+  }
+  
+  .green
+  {
+    color: #33cc33 !important;
+  }
+  
+  .grey{
+    color:  gray ;
+  }
+  

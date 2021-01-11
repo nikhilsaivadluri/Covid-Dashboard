@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="dashboard-content">
     <div className="header">
-    <span class="title">Covid-19 Dashboard</span>
+    <span class="title">COVID-19 Dashboard</span>
     </div>  
     <NationalDashboard></NationalDashboard>
     </div> 
